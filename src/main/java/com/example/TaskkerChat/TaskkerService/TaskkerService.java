@@ -19,9 +19,16 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Slf4j
@@ -98,7 +105,29 @@ public class TaskkerService {
             log.error("Error sending request: {}", e.getMessage());
             return "Error: " + e.getMessage();
         }
+    }
+
+    public String taskkerChat() {
+        String apiUrl = "https://axiom-taskker.onrender.com/api/tasks";
+        String token = "Bearer MTM.ZoiicIohUNAzul9RqaiKRQeI0_jUkIgb7fkfejymFX5FW1-pyvHhaMt6cq15";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        RequestEntity<Void> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(apiUrl));
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            return  responseEntity.getBody();
+        } else {
+            System.out.println("Falha na chamada à API. Código de Status: " + responseEntity.getStatusCodeValue());
         }
+        return apiUrl;
+    }
 
 }
 

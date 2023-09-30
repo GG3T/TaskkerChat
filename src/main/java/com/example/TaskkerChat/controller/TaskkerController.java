@@ -33,5 +33,12 @@ public class TaskkerController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/listaTarefas")
+    public ResponseEntity<String> getTarefas() throws Exception {
+
+        String response = taskkerService.taskkerChat();
+        return ResponseEntity.ok(response);
+    }
+
 }
 
