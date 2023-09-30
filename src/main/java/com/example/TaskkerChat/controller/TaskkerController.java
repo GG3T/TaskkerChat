@@ -1,5 +1,6 @@
 package com.example.TaskkerChat.controller;
 
+import com.example.TaskkerChat.TaskListResponse;
 import com.example.TaskkerChat.TaskkerService.TaskkerService;
 import com.theokanning.openai.completion.CompletionChoice;
 import lombok.Data;
@@ -20,25 +21,30 @@ public class TaskkerController {
     @Autowired
     TaskkerService taskkerService;
 
+    String END_POINT = "https://api.openai.com/v1/chat/completions";
+    //String endpoint = "https://api.openai.com/v1/engines/davinci/completions";
+    String API_KEY = "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";
     @GetMapping("/tarefas")
     public ResponseEntity<String> getTarefas(@RequestParam( name = "input") String input) throws Exception {
 
-        String endpoint = "https://api.openai.com/v1/chat/completions";
-        //String endpoint = "https://api.openai.com/v1/engines/davinci/completions";
-        String apiKey = "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";
 
 
-        String response = TaskkerService.sendQuery(input, endpoint, apiKey);
+
+        String response = TaskkerService.sendQuery(input, END_POINT, API_KEY);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/listaTarefas")
     public ResponseEntity<String> getTarefas() throws Exception {
+        TaskListResponse qtdTarefas = taskkerService.taskkerChat();
 
-        String response = taskkerService.taskkerChat();
+        System.out.println(qtdTarefas);
+        String prompt = "receba as tarefas e me diga a quantidade { \"tarefas\":" + qtdTarefas.getData().size() + " }";
+        System.out.println(prompt);
+        String response = TaskkerService.sendQuery(prompt, END_POINT, API_KEY);
+
         return ResponseEntity.ok(response);
     }
-
 }
 

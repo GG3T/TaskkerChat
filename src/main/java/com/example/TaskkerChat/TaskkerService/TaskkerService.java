@@ -1,5 +1,6 @@
 package com.example.TaskkerChat.TaskkerService;
 
+import com.example.TaskkerChat.TaskListResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.theokanning.openai.OpenAiService;
@@ -64,7 +65,7 @@ public class TaskkerService {
 
         payload.put("model", "gpt-3.5-turbo");
         payload.put("messages", messageList);
-        payload.put("temperature", 0.7);
+        payload.put("temperature", 0.0);
 
 
         StringEntity inputEntity = new StringEntity(payload.toString(), ContentType.APPLICATION_JSON);
@@ -107,7 +108,7 @@ public class TaskkerService {
         }
     }
 
-    public String taskkerChat() {
+    public TaskListResponse taskkerChat() {
         String apiUrl = "https://axiom-taskker.onrender.com/api/tasks";
         String token = "Bearer MTM.ZoiicIohUNAzul9RqaiKRQeI0_jUkIgb7fkfejymFX5FW1-pyvHhaMt6cq15";
 
@@ -119,14 +120,14 @@ public class TaskkerService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<TaskListResponse> responseEntity = restTemplate.exchange(requestEntity, TaskListResponse.class);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             return  responseEntity.getBody();
         } else {
             System.out.println("Falha na chamada à API. Código de Status: " + responseEntity.getStatusCodeValue());
         }
-        return apiUrl;
+        return responseEntity.getBody();
     }
 
 }
